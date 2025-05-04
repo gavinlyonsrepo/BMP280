@@ -52,7 +52,7 @@ namespace BMP280
     {
         uint8_t buffer[3] = {0x00, 0x00, 0x00};
         int32_t result = 0;
-        uint8_t readRegister = reg |= 0b1000000; // AND with 0b1000000 for read operation in SPI comunication.
+        uint8_t readRegister = reg |= _SPI_COMM_MASK ; // OR with reg because R='1' bit in SPI read operation
         if (burst == true)
         {
             // Read 3 register one after another
@@ -95,7 +95,7 @@ namespace BMP280
         #ifdef DEBUG_REGISTER
         printf("REGISTER - value to be set: %i\n", config);
         #endif
-        uint8_t data[2] = {(reg &= 0b01111111), config}; // OR with reg because R='0' bit in SPI write operation
+        uint8_t data[2] = {(reg &= ~_SPI_COMM_MASK ), config}; // OR with reg because R='0' bit in SPI write operation
         gpio_put(_cs, false);
         spi_write_blocking(_spiInst, data, 2);
         gpio_put(_cs, true);
@@ -124,7 +124,7 @@ namespace BMP280
     /// @return Value of specified register.
     uint8_t BMP280::readRegister(uint8_t reg)
     {
-        uint8_t data = (reg | 0b10000000);
+        uint8_t data = (reg | _SPI_COMM_MASK ); // OR with reg because R='1' bit in SPI read operation
         uint8_t buffer = 0;
         gpio_put(_cs, false);
         spi_write_blocking(_spiInst, &data, 1);

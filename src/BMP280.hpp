@@ -63,6 +63,7 @@ namespace BMP280{
         double readPressure(int unit = 0);
         double getPressure(int unit = 0) const;
     private:
+        static constexpr uint8_t _SPI_COMM_MASK = 0x80; /**< SPI communication mask*/
         spi_inst_t *_spiInst;
         uint _cs;
         uint8_t _chipID;
